@@ -1,0 +1,22 @@
+---
+- name: Convert /etc/hosts to lowercase
+  hosts: target
+  tasks:
+    - name: Read /etc/hosts
+      shell: cat /etc/hosts
+      register: hosts_content
+      changed_when: false
+
+    - name: Convert to lowercase
+      set_fact:
+        lowercase_hosts: "{{ hosts_content.stdout | lower }}"
+
+    - name: Write to /etc/hosts
+      copy:
+        content: "{{ lowercase_hosts }}"
+        dest: /etc/hosts
+      when: lowercase_hosts != hosts_content.stdout
+
+    - name: Display changes
+      debug:
+        msg: "Changed: {{ hosts_content.changed }}"
