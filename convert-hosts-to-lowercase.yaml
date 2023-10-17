@@ -2,6 +2,10 @@
 - name: Convert /etc/hosts to lowercase
   hosts: target
   tasks:
+    - name: Create a backup of /etc/hosts
+      command: cp -a /etc/hosts /etc/hosts.bak
+      changed_when: false
+      
     - name: Read /etc/hosts
       shell: cat /etc/hosts
       register: hosts_content
